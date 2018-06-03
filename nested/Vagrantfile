@@ -1,0 +1,25 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "fedora/27-cloud-base"
+ 
+  # use libvirt
+  config.vm.provider "libvirt" do |lv|
+    # Customize the amount of memory on the VM:
+    lv.memory = "2048"
+    lv.nested = true
+    lv.cpus = 2
+    lv.cpu_mode = "host-passthrough"
+  end
+
+  # machine level provisioning
+  config.vm.provision "shell", inline: <<-SHELL
+    dnf install -y vagrant
+    usermod -aG libvirt vagrant
+    systemctl enable libvirtd
+    systemctl start libvirtd
+  SHELL
+  config.vm.provision "file", source: "./Vagrantfile.inner", destination: "Vagrantfile"
+end
+
