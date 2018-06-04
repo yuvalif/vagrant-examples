@@ -11,6 +11,10 @@ Vagrant.configure("2") do |config|
     lv.nested = true
     lv.cpus = 2
     lv.cpu_mode = "host-passthrough"
+    # following is needed to prevent the eth0 reuse issue
+    # taken from here: http://nts.strzibny.name/inception-running-vagrant-inside-vagrant-with-kvm/
+    lv.management_network_name = 'vagrant-libvirt-new'
+    lv.management_network_address = '192.168.124.0/24'
   end
 
   # machine level provisioning
