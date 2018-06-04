@@ -4,5 +4,4 @@ This is an example of running vagrant box inside a vagrant box (using libvirt). 
 * nested virtualization in libvirt
 * the reuse of eth0 as the interface name for both boxes
 
-To run the environment, first execute: ```vagrant up``` on the host, and the ```vagrant up``` on the guest.
-
+To run the environment, first execute: ```vagrant up``` on the host, ```vagrant ssh``` to get on the guest, and then ```vagrant up``` on the guest to bring up the nested environment.
