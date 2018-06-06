@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "fedora/27-cloud-base"
+ 
+  # use libvirt and allow for nested virtualization
+  config.vm.provider "libvirt" do |lv|
+    # Customize the amount of memory on the VM:
+    lv.memory = "2048"
+    lv.nested = true
+    lv.cpus = 2
+    lv.cpu_mode = "host-passthrough"
+  end
+
+  # machine level provisioning
+  config.vm.provision "shell", inline: <<-SHELL
+    dnf install -y git
+    dnf install -y rust
+    dnf install -y cargo
+    dnf install -y docker
+    dnf install -y java
+    dnf install -y nc
+    groupadd docker
+    usermod -aG docker vagrant
+    systemctl enable docker
+    systemctl start docker
+    sudo -u vagrant bash -c 'git clone https://github.com/yuvalif/linkerd-tcp-example.git'
+  SHELL
+end
+
