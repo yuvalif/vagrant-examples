@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "fedora/27-cloud-base"
+ 
+  # use libvirt and allow for nested virtualization
+  config.vm.provider "libvirt" do |lv|
+    # Customize the amount of memory on the VM:
+    lv.memory = "2048"
+    lv.nested = true
+    lv.cpus = 2
+    lv.cpu_mode = "host-passthrough"
+    lv.management_network_name = 'vagrant-libvirt-new'
+    lv.management_network_address = '192.168.124.0/24'
+  end
+
+  # machine level provisioning
+  config.vm.provision "shell", inline: <<-SHELL
+    dnf install -y git
+    dnf install -y libvirt-devel
+    dnf install -y golang
+    dnf install -y docker
+    dnf install -y qemu-img
+    groupadd docker
+    usermod -aG docker vagrant
+    systemctl enable docker
+    systemctl start docker
+    sudo -u vagrant bash -c 'echo "export GOPATH=~/go/; export PATH=${PATH}:~/go/bin" >> ~/.bashrc'
+    sudo -u vagrant bash -c 'go get -d kubevirt.io/kubevirt/...'
+  SHELL
+end
+

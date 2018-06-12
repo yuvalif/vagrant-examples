@@ -1,0 +1,18 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "fedora/27-cloud-base"
+
+  # machine level provisioning
+  config.vm.provision "shell", inline: <<-SHELL
+    dnf install -y git
+    dnf install -y glib2-devel 
+    dnf install -y libfdt-devel 
+    dnf install -y pixman-devel 
+    dnf install -y zlib-devel
+    dnf install -y gcc-c++
+    sudo -u vagrant bash -c 'git clone git://git.qemu.org/qemu.git'
+  SHELL
+end
+
