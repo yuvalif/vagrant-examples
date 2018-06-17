@@ -1,0 +1,30 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "fedora/27-cloud-base"
+
+  # use libvirt
+  config.vm.provider "libvirt" do |lv|
+    # Customize the amount of memory on the VM and to support nested virtualization
+    lv.memory = "2048"
+    lv.nested = true
+    lv.cpus = 2
+    lv.cpu_mode = "host-passthrough"
+  end
+
+  # machine level provisioning
+  config.vm.provision "shell", inline: <<-SHELL
+    dnf install -y kernel kernel-devel kernel-headers
+    dnf install -y elfutils-libelf-devel
+    dnf install -y gcc
+    dnf install -y git
+    dnf install -y cmake
+    dnf install -y gmp-devel
+    dnf install -y @virtualization
+    sudo -u vagrant bash -c 'git clone https://github.com/PeterHuewe/tpm-emulator.git'
+    sed -i '/Werror/a add_definitions(-Wimplicit-fallthrough=0)' /home/vagrant/tpm-emulator/CMakeLists.txt
+  SHELL
+  # TODO install fedora vm using libvirt
+end
+
