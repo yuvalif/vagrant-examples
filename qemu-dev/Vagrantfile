@@ -12,7 +12,9 @@ Vagrant.configure("2") do |config|
     dnf install -y pixman-devel 
     dnf install -y zlib-devel
     dnf install -y gcc-c++
-    sudo -u vagrant bash -c 'git clone git://git.qemu.org/qemu.git' 2> 2> /dev/null || (cd qemu; git pull)
+    dnf install -y make
+    dnf install -y python
+    sudo -u vagrant bash -c 'git clone git://git.qemu.org/qemu.git'  2> /dev/null || (cd qemu; git pull)
   SHELL
 end
 
